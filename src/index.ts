@@ -1,4 +1,5 @@
 import { Telegraf } from 'telegraf';
+import {HttpsProxyAgent} from 'https-proxy-agent'
 
 import { about } from './commands';
 import { greeting } from './text';
@@ -8,7 +9,20 @@ import { development, production } from './core';
 const BOT_TOKEN = process.env.BOT_TOKEN || '';
 const ENVIRONMENT = process.env.NODE_ENV || '';
 
-const bot = new Telegraf(BOT_TOKEN);
+const bot = new Telegraf(BOT_TOKEN, {
+    telegram: {
+        agent: ENVIRONMENT !== 'production'
+            ? new HttpsProxyAgent(process.env.PROXY_URL||"")
+            : undefined
+    }
+});
+
+bot.telegram.setMyCommands([
+    {
+      command: 'about',
+      description: 'Test command',
+    },
+  ]);
 
 bot.command('about', about());
 bot.on('message', greeting());
@@ -17,5 +31,5 @@ bot.on('message', greeting());
 export const startVercel = async (req: VercelRequest, res: VercelResponse) => {
   await production(req, res, bot);
 };
-//dev mode
+// //dev mode
 ENVIRONMENT !== 'production' && development(bot);
