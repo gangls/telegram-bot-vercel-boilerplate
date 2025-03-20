@@ -9,11 +9,12 @@ import { development, production } from './core';
 const BOT_TOKEN = process.env.BOT_TOKEN || '';
 const ENVIRONMENT = process.env.NODE_ENV || '';
 
-const bot = new Telegraf(BOT_TOKEN, {
-    telegram: {
-        agent: new HttpsProxyAgent(process.env.PROXY_URL||"http://127.0.0.1:54706")
-    }
-});
+// const bot = new Telegraf(BOT_TOKEN, {
+//     telegram: {
+//         agent: new HttpsProxyAgent(process.env.PROXY_URL||"http://127.0.0.1:54706")
+//     }
+// });
+const bot = new Telegraf(BOT_TOKEN);
 
 bot.telegram.setMyCommands([
     {
